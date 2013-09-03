@@ -15,7 +15,11 @@ class AccountController extends Zend_Controller_Action
 
     public function successAction()
     {
-        // action body
+		$email = $this->_request->getParam('email');
+		$username = $this->_request->getParam('username');
+		$password = $this->_request->getParam('password');
+		
+		//Save the user into the system.        
     }
 
     public function newAction()

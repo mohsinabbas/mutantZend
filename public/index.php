@@ -23,17 +23,23 @@ $application = new Zend_Application(
     APPLICATION_PATH . '/configs/application.ini'
 );
 
-
+					
 /** Routing Info **/
 $FrontController = Zend_Controller_Front::getInstance();
 $Router = $FrontController->getRouter();
-$Router->addRoute("artiststore",new Zend_Controller_Router_Route
-					("artist/store",
-						array
-							("controller" => "artist",
-							 "action" => "artistaffiliatecontent"
-							)
-					));
+$Router->addRoute("artistprofile",new Zend_Controller_Router_Route(					
+					"artist/:artistname",
+					array
+					("artistname" => "The Smiths",
+					"controller" => "artist",
+					"action" => "profile"
+					)));
+$Router->addRoute("artiststore",new Zend_Controller_Router_Route(
+					"artist/store",
+					array
+					("controller" => "artist",
+					"action" => "artistaffiliatecontent"
+					)));
 
 
 
