@@ -17,12 +17,17 @@ class AccountController extends Zend_Controller_Action
     {
 	//Check if the submitted data is POST type
         if($this->_request->isPost()){
-        $email = $this->_request->getPost("email");
-        $username = $this->_request->getPost("username");
-        $password = $this->_request->getPost("password");
-        //Save the user into the system.
+        $email = $this->_request->getParam("email");
+        $username = $this->_request->getParam("username");
+        $password = $this->_request->getParam("password");
+        
+        //Initiate the SaveAccount model.        
+        require_once "SaveAccount.php";
+        $SaveAccount = new SaveAccount();
+        $SaveAccount->saveAccount($username, $password, $email);
+        
         }else{
-        throw new Exception("Whoops. Wrong way of submitting your information.");
+        throw new Exception("Whoopss. Wrong way of submitting your information.");
         }       
     }
 
