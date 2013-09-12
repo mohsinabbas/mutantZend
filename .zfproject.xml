@@ -17,12 +17,15 @@
           <actionMethod actionName="success"/>
           <actionMethod actionName="new"/>
           <actionMethod actionName="activate"/>
+          <actionMethod actionName="update"/>
         </controllerFile>
         <controllerFile controllerName="Artist">
           <actionMethod actionName="index"/>
           <actionMethod actionName="listAllArtist"/>
           <actionMethod actionName="artistaffiliatecontent"/>
           <actionMethod actionName="profile"/>
+          <actionMethod actionName="new"/>
+          <actionMethod actionName="saveArtist"/>
         </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false"/>
@@ -62,6 +65,18 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Artist">
             <viewScriptFile forActionName="profile"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Artist">
+            <viewScriptFile forActionName="new"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Artist">
+            <viewScriptFile forActionName="saveArtist"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Artist">
+            <viewScriptFile forActionName="saveArtist"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Account">
+            <viewScriptFile forActionName="update"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
