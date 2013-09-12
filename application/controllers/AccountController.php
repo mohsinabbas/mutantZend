@@ -35,14 +35,14 @@ class AccountController extends Zend_Controller_Action
     {
         // action body
     }
-    
-    /**
-    * Activate Account. Used once the user
-    * receives a welcome email and decides to authenticate
-    * their account.
-    *
-    */
 
+    /**
+     * Activate Account. Used once the user
+     * receives a welcome email and decides to authenticate
+     * their account.
+     * 
+     *
+     */
     public function activateAction()
     {
         //Fetch the email to update from the query param 'email'
@@ -53,8 +53,27 @@ class AccountController extends Zend_Controller_Action
         
     }
 
+    public function updateAction()
+    {
+        //Check if the user is logged in
+		//Get the user's id
+		//Get the user's information
+		//Create the Zend_View object
+		$view = new Zend_View();
+		//Assign variables if any
+		$view->setScriptPath(APPLICATION_PATH . "\views");
+		$view->render("update.phtml");
+		
+		
+		//working for view 
+		//$this->renderScript('account/update.phtml');
+		
+    }
+
 
 }
+
+
 
 
 
