@@ -61,8 +61,8 @@ class AccountController extends Zend_Controller_Action
 		//Create the Zend_View object
 		$view = new Zend_View();
 		//Assign variables if any
-		$view->setScriptPath(APPLICATION_PATH . "\views");
-		$view->render("update.phtml");
+		$view->setScriptPath(APPLICATION_PATH . "views/scripts/account");
+		$this->render("update");
 		
 		
 		//working for view 

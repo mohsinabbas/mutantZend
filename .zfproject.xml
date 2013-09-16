@@ -26,6 +26,8 @@
           <actionMethod actionName="profile"/>
           <actionMethod actionName="new"/>
           <actionMethod actionName="saveArtist"/>
+          <actionMethod actionName="news"/>
+          <actionMethod actionName="remove"/>
         </controllerFile>
       </controllersDirectory>
       <formsDirectory enabled="false"/>
@@ -77,6 +79,12 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Account">
             <viewScriptFile forActionName="update"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Artist">
+            <viewScriptFile forActionName="news"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Artist">
+            <viewScriptFile forActionName="remove"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>

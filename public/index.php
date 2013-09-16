@@ -27,13 +27,13 @@ $application = new Zend_Application(
 /** Routing Info **/
 $FrontController = Zend_Controller_Front::getInstance();
 $Router = $FrontController->getRouter();
-$Router->addRoute("artistprofile",new Zend_Controller_Router_Route(					
+/*$Router->addRoute("artistprofile",new Zend_Controller_Router_Route(					
 					"artist/:artistname",
 					array
 					("artistname" => "The Smiths",
 					"controller" => "artist",
 					"action" => "profile"
-					)));
+					)));*/
 $Router->addRoute("artiststore",new Zend_Controller_Router_Route(
 					"artist/store",
 					array
