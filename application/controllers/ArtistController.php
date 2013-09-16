@@ -53,9 +53,11 @@ class ArtistController extends Zend_Controller_Action
 		$isFav = $this->_request->getPost('isFav');
 		$rating = $this->_request->getPost('rating');
 		
+		//1. method to change escape function
 		//Override default escape
 		/*$this->view->setEscape('strip_tags');*/
 		
+		//2. method to change escape function properties by making new class
 		//Set new escape function to use.
 		require "utils/Escape.php";
 		$escapeObj = new Escape();

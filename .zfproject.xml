@@ -17,7 +17,7 @@
           <actionMethod actionName="success"/>
           <actionMethod actionName="new"/>
           <actionMethod actionName="activate"/>
-          <actionMethod actionName="update"/>
+          <actionMethod actionName="update"/>          
         </controllerFile>
         <controllerFile controllerName="Artist">
           <actionMethod actionName="index"/>
@@ -85,6 +85,9 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Artist">
             <viewScriptFile forActionName="remove"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Account">
+            <viewScriptFile forActionName="getSignupForm"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>
