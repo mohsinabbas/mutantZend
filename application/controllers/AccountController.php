@@ -77,14 +77,44 @@ class AccountController extends Zend_Controller_Action
 
     public function updateAction()
     {
+		//Check if the user is logged in
+		//Fetch the user's id
+		//Fetch the users information
+		//Create the form.
+		$form = $this->getUpdateForm();
+		//Check if the form has been submitted.
+		//If so validate and process.
+		if($_POST){
+			//Check if the form is valid.
+			if($form->isValid($_POST)){
+				//Get the values
+				$username = $form->getValue('username');
+				$password = $form->getValue('password');
+				$email = $form->getValue('email');
+				$aboutMe = $form->getValue('aboutme');
+				//Save.
+			}
+			//Otherwise redisplay the form.
+			else{
+				$this->view->form = $form;
+			}
+		
+		}
+		//Otherwise display the form.
+		else{
+			$this->view->form = $form;
+		}		
+		
+		
+		
         //Check if the user is logged in
 		//Get the user's id
 		//Get the user's information
 		//Create the Zend_View object
-		$view = new Zend_View();
+	//	$view = new Zend_View();
 		//Assign variables if any
-		$view->setScriptPath(APPLICATION_PATH . "views/scripts/account");
-		$this->render("update");
+	//	$view->setScriptPath(APPLICATION_PATH . "views/scripts/account");
+	//	$this->render("update");
 		
 		
 		//working for view 
@@ -149,17 +179,44 @@ class AccountController extends Zend_Controller_Action
 		
 		return $form;
     }
+	
+	
+	/**
+	* Update Form
+	*/
+	private function getUpdateForm()
+	{
+		//Create Form
+		$form = new Zend_Form();
+		$form->setAction('update');
+		$form->setMethod('post');
+		$form->setAttrib('sitename', 'loudbite');
+
+		//Load Elements class
+		require APPLICATION_PATH."/models/Form/Elements.php";
+		$LoudbiteElements = new Elements();
+		//Create Username Field.
+		$form->addElement($LoudbiteElements->getUsernameTextField());
+		//Create Email Field.
+		$form->addElement($LoudbiteElements->getEmailTextField());
+		
+		//Create Password Field.
+		$form->addElement($LoudbiteElements->getPasswordTextField());
+		
+		//Create Text Area for About me.
+		$textAreaElement = new Zend_Form_Element_TextArea('aboutme');
+		$textAreaElement->setLabel('About Me:');
+		$textAreaElement->setAttribs(array('cols' => 15,'rows' => 5));
+		$form->addElement($textAreaElement);
+		
+		//Create a submit button.
+		$form->addElement('submit', 'submit');
+		$submitElement = $form->getElement('submit');
+		$submitElement->setLabel('Update My Account');
+		
+		return $form;
+	}
+		
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
