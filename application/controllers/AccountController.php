@@ -80,10 +80,12 @@ class AccountController extends Zend_Controller_Action
 		//Check if the user is logged in
 		//Fetch the user's id
 		//Fetch the users information
+		
 		//Create the form.
 		$form = $this->getUpdateForm();
 		//Check if the form has been submitted.
 		//If so validate and process.
+		
 		if($_POST){
 			//Check if the form is valid.
 			if($form->isValid($_POST)){
@@ -92,19 +94,20 @@ class AccountController extends Zend_Controller_Action
 				$password = $form->getValue('password');
 				$email = $form->getValue('email');
 				$aboutMe = $form->getValue('aboutme');
+				
+				//Save the file
+				$form->avatar->receive();
 				//Save.
 			}
 			//Otherwise redisplay the form.
 			else{
 				$this->view->form = $form;
 			}
-		
 		}
 		//Otherwise display the form.
 		else{
 			$this->view->form = $form;
-		}		
-		
+		}
 		
 		
         //Check if the user is logged in
@@ -128,6 +131,38 @@ class AccountController extends Zend_Controller_Action
     private function getSignupForm()
     {
 		//Create Form
+		$form = new Zend_Form();
+		$form->setAction('success');
+		$form->setMethod('post');
+		$form->setAttrib('sitename', 'loudbite');
+		
+		//Add Elements		
+		require APPLICATION_PATH."/models/Form/Elements.php";
+		$LoudbiteElements = new Elements();
+		
+		//Create Username Field.
+		$form->addElement($LoudbiteElements->getUsernameTextField());
+		//Create Email Field.
+		$form->addElement($LoudbiteElements->getEmailTextField());
+		//Create Password Field.
+		$form->addElement($LoudbiteElements->getPasswordTextField());
+		//Add Captcha
+		$captchaElement = new Zend_Form_Element_Captcha('signup',array(
+																	'captcha' => array(
+																					'captcha' => 'Figlet',
+																					'wordLen' => 4,
+																					'timeout' => 600))
+																					);
+		$captchaElement->setLabel('Please type in the words below to continue');
+		$form->addElement($captchaElement);
+		$form->addElement('submit', 'submit');
+		$submitButton = $form->getElement('submit');
+		$submitButton->setLabel('Create My Account!');
+		
+		return $form;
+		
+		
+		/*//Create Form
 		$form = new Zend_Form();
 		$form->setAction('success');
 		$form->setMethod('post');
@@ -177,7 +212,7 @@ class AccountController extends Zend_Controller_Action
 		$submitButton->setLabel('Create My Account!');
 		$submitButton->setOrder(4);
 		
-		return $form;
+		return $form;*/
     }
 	
 	
@@ -191,24 +226,30 @@ class AccountController extends Zend_Controller_Action
 		$form->setAction('update');
 		$form->setMethod('post');
 		$form->setAttrib('sitename', 'loudbite');
-
+		$form->setAttrib('enctype', 'multipart/form-data');
 		//Load Elements class
 		require APPLICATION_PATH."/models/Form/Elements.php";
 		$LoudbiteElements = new Elements();
+		
 		//Create Username Field.
 		$form->addElement($LoudbiteElements->getUsernameTextField());
 		//Create Email Field.
 		$form->addElement($LoudbiteElements->getEmailTextField());
-		
 		//Create Password Field.
 		$form->addElement($LoudbiteElements->getPasswordTextField());
-		
 		//Create Text Area for About me.
 		$textAreaElement = new Zend_Form_Element_TextArea('aboutme');
 		$textAreaElement->setLabel('About Me:');
-		$textAreaElement->setAttribs(array('cols' => 15,'rows' => 5));
+		$textAreaElement->setAttribs(array('cols' => 15,
+		'rows' => 5));
 		$form->addElement($textAreaElement);
-		
+		//Add File Upload
+		$fileUploadElement = new Zend_Form_Element_File('avatar');
+		$fileUploadElement->setLabel('Your Avatar:');
+		$fileUploadElement->setDestination('../public/users');
+		$fileUploadElement->addValidator('Count', false, 1);
+		$fileUploadElement->addValidator('Extension', false, 'jpg,gif');
+		$form->addElement($fileUploadElement);
 		//Create a submit button.
 		$form->addElement('submit', 'submit');
 		$submitElement = $form->getElement('submit');
