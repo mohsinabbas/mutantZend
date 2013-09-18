@@ -6,9 +6,20 @@
 <body>
 	<?php echo $this->render('includes/header.phtml') ?>
     <h3>Add Artist</h3>
-    <p>
+    
+    <?php
+		if($this->errors)
+		{
+			echo $this->form;
+		}else{
+			echo "Thank you. The artist has successfully saved.<br/>
+			   	 	<a href='new'>Add another artist</a>";
+		}
+    ?>
+    
+    <!--<p>
    	 	Thank you. The artist has successfully saved.<br/>
    	 	<a href='new'>Add another artist</a>
-    </p>
+    </p> -->
 </body>
 </html>

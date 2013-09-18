@@ -54,10 +54,7 @@ class Elements
 		$usernameElement->setLabel('Username:');
 		$usernameElement->setRequired(true);
 		//Add validator
-		$usernameElement->addValidator
-		(
-		new Zend_Validate_StringLength(6, 20)
-		);
+		$usernameElement->addValidator(new Zend_Validate_StringLength(6, 20));
 		//Add Filter
 		$usernameElement->addFilter(new Zend_Filter_StripTags());
 		$usernameElement->addFilter(new Zend_Filter_HtmlEntities());

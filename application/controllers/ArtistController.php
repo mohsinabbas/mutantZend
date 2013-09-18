@@ -51,7 +51,64 @@ class ArtistController extends Zend_Controller_Action
 
     public function saveArtistAction()
     {
-        //get Posted data 
+		//Create instance of artist form.
+		$form = $this->getAddArtistForm();
+		
+		//Check for logged in status
+		if(!isset($_SESSION['id'])){
+				$this->_forward("login");
+		}
+		
+		//Check if there were no errors
+		if($form->isValid($_POST)){
+		
+			//Initialize the variables
+			$artistName = $form->getValue('artistName');
+			$genre = $form->getValue('genre');
+			$rating = $form->getValue('rating');
+			$isFav = $form->getValue('isFavorite');
+			//Set the temporary account id to use.			
+			$userId = $_SESSION['id'];
+			try{
+				//Create a db object
+				require APPLICATION_PATH."/models/Db/Db_Db.php";
+				$db = Db_Db::conn();
+				
+				//Initialize data to save into DB
+				$artistData = array("artist_name" => $artistName,
+									"genre" => $genre,
+									"created_date" =>
+									new Zend_Db_Expr("NOW()"));
+				//Insert the artist into the Db
+				$db->insert('artists', $artistData);
+				//Fetch the artist id
+				$artistId = $db->lastInsertId();
+				//Initialize data for the account artists table
+				$accountArtistData = array("account_id" => $userId,
+											"artist_id" => $artistId,
+											"rating" => $rating,
+											"is_fav" => $isFav,
+											"created_date" => new Zend_Db_Expr("NOW()"));
+				//Insert the data.		
+				$db->insert('accounts_artists', $accountArtistData);
+				$db->commit();
+				
+			}catch(Zend_Db_Exception $e)
+			{
+				//If there were errors roll everything back.
+				$db->rollBack();
+				echo $e->getMessage();
+			}
+		}else{
+		
+			$this->view->errors = $form->getMessages();
+			$this->view->form = $form;
+		}
+
+
+
+		
+        /*//get Posted data 
 		$artistName = $this->_request->getPost('artistName');
 		$genre = $this->_request->getPost('genre');
 		$isFav = $this->_request->getPost('isFav');
@@ -59,7 +116,7 @@ class ArtistController extends Zend_Controller_Action
 		
 		//1. method to change escape function
 		//Override default escape
-		/*$this->view->setEscape('strip_tags');*/
+		//$this->view->setEscape('strip_tags');
 		
 		//2. method to change escape function properties by making new class
 		//Set new escape function to use.
@@ -76,7 +133,7 @@ class ArtistController extends Zend_Controller_Action
 		$isFav = $this->view->escape($isFav);
 		
 		
-		//After validation save data in DB
+		//After validation save data in DB*/
 				
 		
     }
@@ -89,13 +146,17 @@ class ArtistController extends Zend_Controller_Action
 	private function getAddArtistForm()
 	{
 		$form = new Zend_Form();
-		$form->setAction("saveartist");
+		$form->setAction("save-artist");
 		$form->setMethod("post");
 		$form->setName("addartist");
 		
 		//Create artist name text field.
 		$artistNameElement = new Zend_Form_Element_Text('artistName');
 		$artistNameElement->setLabel("Artist Name:");
+		$artistNameElement->setRequired(true);
+		//Add Validator
+		$artistNameElement->addValidator(new Zend_Validate_StringLength(6,20));
+	
 		
 		//Create genres select menu
 		$genres = array("multiOptions" => array(
@@ -218,23 +279,28 @@ class ArtistController extends Zend_Controller_Action
 			$this->view->assign($totalNumberOfArtists);
 		
     }
+	
+	
+	
+	/**
+	* Test - Object Oriented Select Statement
+	*/
+	public function testoostatementAction() {
+		//Create DB object
+		require APPLICATION_PATH."/models/Db/Db_Db.php";
+		$db = Db_Db::conn();
+		
+		//Create the statement
+		//Select * FROM `artists`;
+		$select = new Zend_Db_Select($db);
+		$statement = $select->from('artists');
+		//Compare Statement
+		echo $statement->__toString();
+		//Supress the View
+		$this->_helper->viewRenderer->setNoRender();
+		
+	}
+	
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
