@@ -51,15 +51,69 @@ class EmailController extends Zend_Controller_Action
 	
 	/**
 	* Send email using SMTP Host.
+	* Validate e-email address.
 	*
 	*/
 	public function smtpSendMailAction()
 	{
+		//Create SMTP connection
+		$configInfo = array('auth' => 'login',
+							'ssl' => 'tls',
+							'username' => '<YOUR ACCOUNT USERNAME>',
+							'password' => '<YOUR SMTP ACCOUNT PASSWORD>',
+							'port' => '<SMTP PORT NUMBER>');
+		$smtpHost = new Zend_Mail_Transport_Smtp('<SMTP HOST>',	$configInfo);
+		
+		//Create Zend_Mail object.
+		$MailObj = new Zend_Mail();
+		//Initialize parameters.
+		$emailMessage = "Hey, this is a Zend_Mail–created e-mail!";
+		$fromEmail = "admin@gmail.com";
+		$fromFullName = "Admin";
+		$to = "mohsin@gmail.com";
+		$subject = "This is an example";
+		//Check if email is valid.
+		$validator = new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_DNS,true);
+		
+		if($validator->isValid($to))
+		{
+			$MailObj->setBodyText($emailMessage);
+			$MailObj->setFrom($fromEmail, $fromFullName);
+			$MailObj->addTo($to);
+			$MailObj->setSubject($subject);
+			//Send Email using transport protocol.
+			try{
+				$MailObj->send();//$smtpHost
+				echo "Email sent successfully";
+			}catch(Zend_Mail_Exception $e){
+				//Your Error message here.
+				echo $e->getMessage();
+			}
+		}else{
+			//Messages in array.
+			$messages = $validator->getMessages();
+			foreach($messages as $message){
+				echo $message.'<br/>';
+			}
+		}
+		//Suppress the view.
+		$this->_helper->viewRenderer->setNoRender();
+		
+	}
+	
+	
+	
+	/**
+	* Send email using SMTP Host.
+	*
+	*/	
+	public function smtpSendMailAction_()	
+	{
 		//Create SMTP connection Object
 		$configInfo = array('auth' => 'login',
 							'ssl' => 'tls',
-							'username' => 'mohsinpucit@gmail.com',
-							'password' => '04203349733611',//'<YOUR SMTP ACCOUNT PASSWORD>',
+							'username' => '',
+							'password' => '',//'<YOUR SMTP ACCOUNT PASSWORD>',
 							'port' => '587'//'<SMTP PORT NUMBER>'
 							);
 		$smtpHost = new Zend_Mail_Transport_Smtp('<SMTP HOST>',$configInfo);

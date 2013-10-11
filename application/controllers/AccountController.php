@@ -12,8 +12,174 @@ class AccountController extends Zend_Controller_Action
     {
         // action body
     }
+	
+	/**
+	* Process Sign up Form.
+	*
+	*/
+	public function successAction()
+	{
+		$form = $this->getSignupForm();
+		//Check if the submitted data is POST type
+		if($form->isValid($_POST)){
+		$email = $form->getValue("email");
+		$username = $form->getValue("username");
+		$password = $form->getValue("password");
+		//Create Db object
+		require APPLICATION_PATH."/models/Db/Db_Db.php";
+		$db = Db_Db::conn();
+		
+		//Create the record to save into the Db.
+		$userData = array("username" => $username,
+						"email" => $email,
+						"password" => $password,
+						"status" => 'pending',
+						"created_date" => new Zend_Db_Expr("NOW()"));
+		try{
+			//Insert into the accounts.
+			$db->insert('accounts', $userData);
+			
+			//Get the Id of the user
+			$userId = $db->lastInsertId();
+			
+		//Insert the user into the database
+		//Send out thank you email.
+		$config = array('ssl' => 'tls', 'auth' => 'login',
+		'username' => '<your SMTP username>',
+		'password' => '<your SMTP password>');
+		$transport = new Zend_Mail_Transport_Smtp('<your SMTP host>', $config);
+		
+		//Set the user's email address
+		$to = $email;
+		//Prepare the welcome email
+		$MailObj = new Zend_Mail();
+		$subject = "Welcome to LoudBite.com";
+		$emailMessage = "Welcome to LoudBite.com. " . "We've sent you a separate activation email.";
+		$fromEmail = "welcomeparty@loudbite.com";
+		$fromFullName = "LoudBite.com";
+		
+		//Prepare the activation email
+		$subjectActivation = "Activate your LoudBite.com account";
+		$emailActivationMessage =
+			"Thanks for taking the time to join LoudBite.com.
+			What you do now is up to you.
+			You can ignore this email and you won't have
+			access to the best music mashup site in town
+			or you can click on the link below to
+			activate your account...
+			The choice is up to you.
+			http://mutantzend.local/account/activate?email=".$email;
+			
+		$fromActivationEmail = "activation@loudbite.com";
+		$fromActivationFullName = "LoudBite.com Activation";
+		
+			//Send the welcome email
+			$MailObj->setBodyText($emailMessage);
+			$MailObj->setFrom($fromEmail, $fromFullName);
+			$MailObj->addTo($to);
+			$MailObj->setSubject($subject);
+			$MailObj->send();//$transport
+			//Send the activation email
+			$MailObj = new Zend_Mail();
+			$MailObj->setBodyText($emailActivationMessage);
+			$MailObj->setFrom(
+			$fromActivationEmail,
+			$fromActivationFullName);
+			$MailObj->addTo($to);
+			$MailObj->setSubject($subjectActivation);
+			$MailObj->send();//$transport
+		}catch(Zend_Db_Exception $e){
+			echo $e->getMessage();
+		}
+		}else{
+			$this->view->errors = $form->getMessages();
+			$this->view->form = $form;
+		}
+	}
+	
+	/** 
+	***Activate account.
+	**/
+	public function activateAction()
+	{
+		//Fetch the email to update from the query param 'email'
+		$emailToActivate = $this->_request->getQuery("email");
+		//Create a db object
+		require APPLICATION_PATH."/models/Db/Db_Db.php";
+		$db = Db_Db::conn();
+		try{
+		//Check if the user is in the system
+		$statement = "SELECT COUNT(id) AS total From Accounts
+					  WHERE email = '".$emailToActivate."'
+					  AND status = 'pending'";
+		$results = $db->fetchOne($statement);
+		//If we have at least one row then the user's
+		//email is valid.
+		if($results == 1){
+		//Activate the account.
+		$conditions[] = "email = '".$emailToActivate."'";
+		//Updates to commit
+		$updates = array("status" => 'active');
+		$results = $db->update('Accounts',$updates,$conditions);
+		
+		//Set activate flag to true
+		$this->view->activated = true;
+		}else{
+			//Set activate flag to false
+			$this->view->activated = false;
+		}
+		}catch(Zend_Db_Exception $e){
+			throw new Exception($e);
+		}
+	}
+		
+	
+	/**
+	* Process Sign up Form.
+	*
+	*/
+	public function successAction__()
+	{
+		//Get the signup form
+		$form = $this->getSignupForm();
+		//Check if the submitted data is POST type
+		if($form->isValid($_POST)){
+		$email = $form->getValue("email");
+		$username = $form->getValue("username");
+		$password = $form->getValue("password");
+		//Set the database parameters as described in Chapter 5
+		try{
+		//Save the user to the database as described in Chapter 5
+		//Send out the welcome email.
+		$config = array('ssl' => 'tls', 'auth' => 'login',
+						'username' => '<your SMTP username>',
+						'password' => '<your SMTP password>');
+		$transport = new Zend_Mail_Transport_Smtp('<your SMTP host>',$config);
+		
+		$MailObj = new Zend_Mail();
+		$emailMessage = " Welcome to LoudBite.com.";
+		$fromEmail = "welcomeparty@loudbite.com";
+		$fromFullName = "LoudBite.com";
+		$to = "$email";
+		$subject = "Welcome to LoudBite.com";
+		$MailObj->setBodyText($emailMessage);
+		$MailObj->setFrom($fromEmail, $fromFullName);
+		$MailObj->addTo($to);
+		$MailObj->setSubject($subject);
+		$MailObj->send();//$transport
+		}catch(Zend_Db_Exception $e){
+			echo $e->getMessage();
+			}
+		}else{
+			$this->view->errors = $form->getMessages();
+			$this->view->form = $form;
+		}
+	}
+		
+		
 
-    public function successAction()
+
+    public function successAction_()
     {
 		$form = $this->getSignupForm();
 		
@@ -103,7 +269,7 @@ class AccountController extends Zend_Controller_Action
      * 
      *
      */
-    public function activateAction()
+   /* public function activateAction()
     {
         //Fetch the email to update from the query param 'email'
         $emailToActivate = $this->_request->getQuery("email");
@@ -112,7 +278,7 @@ class AccountController extends Zend_Controller_Action
         //Activate the Account.
         echo $emailToActivate;
         
-    }
+    }*/
 
     public function updateAction()
     {
